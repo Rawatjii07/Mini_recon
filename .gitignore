@@ -1,0 +1,46 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Environments & Dependencies
+.venv/
+venv/
+env/
+ENV/
+build/
+dist/
+*.egg-info/
+
+# Configuration & Sensitive Files
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+*.crt
+
+# Tool-Generated Output & Scan Data
+output/reports/
+output/*.json
+output/*.txt
+output/*.png
+output/*.md
+reports/
+!output/__init__.py
+!output/report.py
+
+# Testing & Coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# IDE & OS Files
+.vscode/
+.idea/
+*.swp
+*.swo
+Thumbs.db
+Desktop.ini
+.DS_Store

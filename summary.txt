@@ -1,0 +1,261 @@
+Project Summary
+
+  The project Mini_recon is a MiniRecon v3.0 Security Platform. It is a Python-based ethical
+  security testing toolkit for authorized reconnaissance, discovery, fuzzing, reporting, AI analysis, and visualization.
+
+  Main capabilities:
+
+  - Recon mode
+      - Resolves target IP.
+      - Scans TCP ports.
+      - Supports common ports, custom ports, port ranges, and all ports.
+      - Detects basic service names.
+      - Attempts banner grabbing.
+      - Brute-forces subdomains.
+      - Checks whether subdomains are live.
+      - Detects HTTPS support and keywords like login, admin, dashboard, portal.
+  - HTTP intelligence
+      - Checks server headers.
+      - Checks X-Powered-By.
+      - Finds missing security headers.
+      - Checks weak cookie flags.
+      - Detects framework hints from cookies.
+      - Checks HTTP to HTTPS redirects.
+      - Reads robots.txt paths.
+  - TLS intelligence
+      - Connects to port 443.
+      - Reads certificate issuer.
+      - Reads expiry date.
+      - Calculates days until expiry.
+      - Extracts Subject Alternative Names.
+      - Adds SAN subdomains into scan data.
+  - DNS/email intelligence
+      - Finds SPF records.
+      - Finds DMARC records.
+      - Finds MX records.
+      - Extracts visible mail provider hints.
+  - Directory discovery
+      - Brute-forces paths from wordlists\dirs.txt.
+      - Adds paths from robots.txt.
+      - Follows redirects.
+      - Flags risky paths like /admin, /backup, /config, /.env, /phpmyadmin.
+      - Flags risky files like .zip, .sql, .bak, .log, .env.
+  - Parameter-aware fuzzing
+      - Fuzzes each URL parameter separately.
+      - Uses wordlists\payloads.txt.
+      - Supports SQLi, XSS, LFI, SSTI-style payload classification.
+      - Builds a baseline response per parameter.
+      - Measures response length difference.
+      - Measures body similarity.
+      - Detects possible WAF behavior.
+      - Supports payload mutation retries.
+      - Gives per-result risk levels.
+  - Smart analysis
+      - Clusters fuzz responses by status and length.
+      - Flags anomalies.
+      - Adds confidence labels.
+      - Calculates overall risk score: LOW, MEDIUM, HIGH, CRITICAL.
+      - Adds practical suggestions.
+  - Reports
+      - Rich terminal tables.
+      - Saves reports as .json, .txt, or .html.
+      - HTML report has a dark themed layout.
+      - Can generate output\scan_graph.png.
+  - AI analysis
+      - Uses NVIDIA NIM through OpenAI-compatible API.
+      - Reads key from .env.
+      - Key name: NVIDIA_API_KEY.
+      - AI can explain ports, headers, directories, fuzzing, and final scan summary.
+
+  Install
+
+  Run this first:
+
+  cd "R:\a coder makes project\major project"
+  pip install -r requirements.txt
+
+  For AI support, create/edit .env:
+
+  NVIDIA_API_KEY=your_key_here
+
+  Main Run Format
+
+  python main.py --target <target> --mode <mode>
+
+  Available modes:
+
+  recon
+  discover
+  fuzz
+  all
+
+  Run Everything
+
+  python main.py --target example.com --mode all
+
+  With selected ports:
+
+  python main.py --target example.com --mode all --ports 80,443
+
+  With a port range:
+
+  python main.py --target example.com --mode all --range 1-1000
+
+  With all ports:
+
+  python main.py --target example.com --mode all --ports all
+
+  Run Recon Only
+
+  python main.py --target example.com --mode recon
+
+  Recon mode runs:
+
+  - IP resolution
+  - Port scan
+  - Subdomain brute force
+  - HTTP intelligence
+  - TLS certificate intelligence
+  - DNS/email intelligence
+  - CVE lookup
+
+  Examples:
+
+  python main.py --target example.com --mode recon --ports 80,443
+
+  python main.py --target example.com --mode recon --range 1-5000 --port-threads 200
+
+  Run Directory Discovery Only
+
+  python main.py --target https://example.com --mode discover
+
+  With custom wordlist:
+
+  python main.py --target https://example.com --mode discover --dir-wordlist wordlists\dirs.txt
+
+  With more threads:
+
+  python main.py --target https://example.com --mode discover --dir-threads 50
+
+  Run Fuzzing Only
+
+  Basic fuzzing:
+
+  python main.py --target https://example.com --mode fuzz
+
+  Fuzz a specific URL:
+
+  python main.py --target example.com --mode fuzz --fuzz-url "https://example.com/search?q=test&id=1"
+
+  Use a FUZZ marker manually:
+
+  python main.py --target example.com --mode fuzz --fuzz-url "https://example.com/search?q=FUZZ"
+
+  Disable URL encoding:
+
+  python main.py --target example.com --mode fuzz --fuzz-url "https://example.com/search?q=test" --no-urlencode
+
+  Disable mutation retries:
+
+  python main.py --target example.com --mode fuzz --fuzz-url "https://example.com/search?q=test" --no-mutation
+
+  Use custom payloads:
+
+  python main.py --target example.com --mode fuzz --fuzz-url "https://example.com/search?q=test" --payload-wordlist wordlists\payloa
+  ds.txt
+
+  Save Reports
+
+  JSON:
+
+  python main.py --target example.com --mode all --ports 80,443 --output reports\example.json
+
+  HTML:
+
+  python main.py --target example.com --mode all --ports 80,443 --output reports\example.html
+
+  Text:
+
+  python main.py --target example.com --mode all --ports 80,443 --output reports\example.txt
+
+  Generate Visualization
+
+  python main.py --target example.com --mode all --ports 80,443 --visualize
+
+  This creates:
+
+  output\scan_graph.png
+
+  Run With AI
+
+  python main.py --target example.com --mode all --ports 80,443 --ai
+
+  With report and visualization:
+
+  python main.py --target example.com --mode all --ports 80,443 --ai --visualize --output reports\example.html
+
+  Run With Stealth/Pacing
+
+  python main.py --target example.com --mode all --ports 80,443 --stealth
+
+  This enables:
+
+  - Random browser User-Agent rotation.
+  - Random delay between requests.
+
+  Useful Combined Commands
+
+  Full scan with JSON report:
+
+  python main.py --target example.com --mode all --ports 80,443 --output reports\example.json
+
+  Full scan with fuzz URL, AI, visualization, and HTML report:
+
+  python main.py --target example.com --mode all --ports 80,443 --fuzz-url "https://example.com/search?q=test&id=1" --ai --visualize
+  --output reports\example.html
+
+  Fast recon:
+
+  python main.py --target example.com --mode recon --ports 80,443 --port-threads 100
+
+  Deep port scan:
+
+  python main.py --target example.com --mode recon --ports all --port-threads 500 --port-timeout 0.5
+
+  Directory discovery with retries:
+
+  python main.py --target https://example.com --mode discover --dir-threads 50 --retries 2
+
+  Fuzzing with more threads:
+
+  python main.py --target example.com --mode fuzz --fuzz-url "https://example.com/search?q=test" --fuzz-threads 30
+
+  Direct Module Commands
+
+  You can also run individual modules directly.
+
+  Port scanner:
+
+  python recon\portscan.py example.com --ports 80,443
+
+  Port range:
+
+  python recon\portscan.py example.com --range 1-1000
+
+  Subdomain brute force:
+
+  python recon\subdomain.py example.com --threads 20
+
+  Directory discovery:
+
+  python discovery\dir_enum.py https://example.com --threads 20
+
+  Fuzzer:
+
+  python fuzzing\fuzzer.py "https://example.com/search?q=test&id=1" --threads 10
+
+  Important
+
+  Use this only on systems you own or have explicit written permission to test. The fuzzer and scanner generate real network traffic.
+
+─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
